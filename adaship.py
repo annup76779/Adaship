@@ -66,6 +66,7 @@ def one_vs_computer():
     target_group = [first_player_board, computer_board]
     shuffle(target_group)
     iteration = 0
+    target = target_group[iteration]
     while first_player_board.board_status and computer_board.board_status:
 
         # this way we will get the next target board in each iteration
@@ -91,6 +92,13 @@ def one_vs_computer():
                 target.hit(x, y)
         print("%s\n\n" % ("--" * board_size[1]))
         iteration += 1
+
+    winner = target_group[iteration % 2]
+    print("The winner is %s" % winner.player)
+
+    print("The board status are:")
+    print(winner)
+    print(target)
 
 
 if __name__ == '__main__':

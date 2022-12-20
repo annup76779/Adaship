@@ -123,7 +123,7 @@ class Board:
 
     @property
     def board_status(self):
-        return all(boat_obj.is_sunken()==False for boat_obj in self.onboard_ships.values())
+        return not all(boat_obj.is_sunken()==True for boat_obj in self.onboard_ships.values())
 
     def get_placed_and_not_placed_ships(self) -> tuple:
         """
