@@ -19,8 +19,7 @@ class Board:
             key = alpha[(col // 26) - 1] + alpha[col % 26]
         cols[key] = col
 
-    def __init__(self, player):
-        self.player = player
+    def __init__(self):
         self.board = [["."] * board_size[1] for _ in range(board_size[0])]
         self.onboard_ships: dict = {ship_name: Ship(ship_name, size) for ship_name, size in ships.items()}
 
@@ -29,11 +28,11 @@ class Board:
         try:
             if direction.lower() == "v":  # for vertical alignment of boat
                 for index in range(size):
-                    if self.board[index+y][x] != ".":
+                    if self.board[index + y][x] != ".":
                         sum_of_free_place += 1
             elif direction.lower() == "h":  # for horizontal alignment of boat
                 for index in range(size):
-                    if self.board[y][index+x] != ".":
+                    if self.board[y][index + x] != ".":
                         sum_of_free_place += 1
             return sum_of_free_place == 0
         except IndexError:
@@ -45,7 +44,7 @@ class Board:
         try:
             if direction.lower() == "v":  # for vertical alignment of boat
                 for index in range(ship_obj.size):
-                    self.board[index+y][x] = 0
+                    self.board[index + y][x] = 0
             elif direction.lower() == "h":  # for horizontal alignment of boat
                 for index in range(ship_obj.size):
                     self.board[y][index + x] = ship_obj
@@ -66,7 +65,7 @@ class Board:
         col = self.cols.get(x.upper())
         if col is None:
             if not is_auto:
-                print("Failed: Coordinate %s cannot be accessed." % x+str(y), end="\n\n")
+                print("Failed: Coordinate %s cannot be accessed." % x + str(y), end="\n\n")
             return False
 
         if not self.validate_ship_placement(col, y, direction, size):
@@ -84,10 +83,10 @@ class Board:
         # placing the ship in the required direction
         if direction.lower() == "v":  # for vertical alignment of boat
             for index in range(size):
-                self.board[index+y][col] = ship_obj
+                self.board[index + y][col] = ship_obj
         elif direction.lower() == "h":  # for horizontal alignment of boat
             for index in range(size):
-                self.board[y][index+col] = ship_obj
+                self.board[y][index + col] = ship_obj
         return True
 
     def auto_place_remaining_ship(self):
@@ -102,28 +101,31 @@ class Board:
                     direction = choice(("H", "V"))
         return True
 
-    def hit(self, x:str, y:int, auto_hit=False):
+    def hit(self, x: str, y: int, auto_hit=False):
         # get the col of the board
         col = self.cols.get(x.upper())
-        if self.board[y][col] == "M" and auto_hit:
+        if self.board[y][col] == "M" or self.board[y][col] == "H":
             return False
         print("Coordinate", f"{x}{y}")
         coordinate_state = self.board[y][col]
         if isinstance(coordinate_state, Ship) and (not coordinate_state.is_sunken()):
             coordinate_state.hit()
             self.board[y][col] = "H"
-            print("%s%s is a 'Hit' on %s's boat!" % (x, y, self.player))
+            return "Hit"
         else:
             self.board[y][col] = "M"
-            print("%s%d is a 'Miss' on %s's boat!" % (x, y, self.player))
-        return True
+            return "Miss"
 
     def get_ship_sunken_status(self):
         return {key: value.is_sunken() for key, value in self.onboard_ships.items()}
 
     @property
     def board_status(self):
-        return not all(boat_obj.is_sunken()==True for boat_obj in self.onboard_ships.values())
+        return not all(boat_obj.is_sunken() == True for boat_obj in self.onboard_ships.values())
+
+    @property
+    def get_live_boats(self):
+        return [boat for boat, status in self.get_ship_sunken_status().items() if status == False]
 
     def get_placed_and_not_placed_ships(self) -> tuple:
         """
@@ -140,11 +142,10 @@ class Board:
         return placed, not_placed
 
     def __str__(self):
-        board = (str(self.player)+" Board").center(board_size[1] * 2)+"\n"
-        board += "+ " + (" ".join(self.cols.keys()) + "\n")
+        board = "+ " + (" ".join(self.cols.keys()) + "\n")
         row_index = 0
         for row in self.board:
-            board += str(row_index)+" " + (" ".join(map(str, row)) + "\n")
+            board += str(row_index) + " " + (" ".join(map(str, row)) + "\n")
             row_index += 1
 
         return board
