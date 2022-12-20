@@ -1,13 +1,7 @@
 from random import shuffle
-
-from board import Board
-from config import ships, board_size
-from game_play import play_adaship
-
 import sys
 
 from players import Player, Computer
-from utils import get_coordinates_tuple
 
 
 def one_vs_computer(salvo = False):
@@ -43,7 +37,36 @@ def one_vs_computer(salvo = False):
 
 
 def two_players(salvo=False):
-    pass
+
+    # place ships on the board
+    print("Place boats on the board: ")
+    player = Player(1)
+    player_2 = Player(2)
+
+    # make each other opponent of each other
+    player.opponent = player_2
+    player_2.opponent = player
+
+    # setup boards
+    player.set_up_board()
+    player_2.set_up_board()
+    player.show_board()
+    player_2.show_board()
+
+    print("\n\nStarting battle ...")
+    players = [player, player_2]
+    shuffle(players)
+    iteration = 0
+    current_player = None
+    while player.board.board_status and player_2.board.board_status:
+        current_player = players[iteration % 2]
+        current_player.play()
+        iteration += 1
+
+    winner = players[(iteration+1) % 2]
+    print("Winner is", winner)
+    winner.show_board()
+    player.show_board()
 
 
 
