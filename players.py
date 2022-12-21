@@ -22,7 +22,7 @@ class Player:
         else:
             raise ValueError("Cannot set opponent of type %s" % type(opponent))
 
-    def set_up_board(self):
+    def set_up_board(self, with_mine = False):
         self.board = Board()
         while True:
             placed, not_placed = self.board.get_placed_and_not_placed_ships()
@@ -78,7 +78,10 @@ class Player:
             # updating the board with the new entry of the boat placement
             self.board.update_board(x, y, direction, boat)
 
-        #
+        if with_mine:
+            # plant mines as the requirements of version 3
+            self.board.plant_mines()
+
         # display the board to player before continuing
         self.show_board()
         permission = input("Do you want to continue with this board? (y/n): ")
@@ -147,11 +150,14 @@ class Player:
 
 
 class Computer(Player):
-    def set_up_board(self):
+    def set_up_board(self, with_mine = False):
         self.board = Board()
         print("Generating computer board...")
         self.board.auto_place_remaining_ship()
         print("Computer has generated it's board.")
+        if with_mine:
+            self.board.plant_mines()
+        self.show_board()
 
     def play(self):
         print("\nComputer's Chance")

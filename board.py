@@ -1,7 +1,6 @@
 from functools import reduce
 
 from config import board_size, ships
-from mine import Mine
 from ships import Ship
 
 from random import randint, choice
@@ -107,21 +106,25 @@ class Board:
                     direction = choice(("H", "V"))
         return True
 
-    def hit(self, x: str, y: int, auto_hit=False):
+    def hit(self, x: str, y: int, auto_hit=False, is_mine_effect = False):
         # get the col of the board
         col = self.cols.get(x.upper())
         if col is None:
-            print(f"{x.upper()}{y}", "is not a valid choice for the board.")
+            if not is_mine_effect:
+                print(f"{x.upper()}{y}", "is not a valid choice for the board.")
             return False
         try:
             if self.board[y][col] == "M" or self.board[y][col] == "H":
-                print("Already cleared this spot!")
+                if not is_mine_effect:
+                    print("Already cleared this spot!")
                 return "exists"
         except IndexError:
-            print(f"{x.upper()}{y}", "is not a valid choice for the board.")
+            if not is_mine_effect:
+                print(f"{x.upper()}{y}", "is not a valid choice for the board.")
             return False
 
         coordinate_state = self.board[y][col]
+        from mine import Mine
         if isinstance(coordinate_state, Ship) and (not coordinate_state.is_sunken()):
             coordinate_state.hit()
             self.board[y][col] = "H"
@@ -156,6 +159,16 @@ class Board:
             else:
                 not_placed.append(ship_name)
         return placed, not_placed
+
+    def plant_mines(self):
+        from mine import Mine
+        count = 0
+        while count < 5:
+            y = randint(0, board_size[0]-1)
+            x = choice(tuple(self.cols.keys()))
+            col = self.cols.get(x)
+            self.board[y][col] = Mine(x, y, self)
+            count+=1
 
     def __str__(self):
         board = "+ " + (" ".join(self.cols.keys()) + "\n")
