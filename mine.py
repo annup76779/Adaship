@@ -32,18 +32,42 @@ class Mine:
 
         # hit the neighbors 8 coordinates of the board
         # first Column
-        self.board.hit(tuple(Board.cols.keys())[self.x - 1], self.y - 1)
-        self.board.hit(tuple(Board.cols.keys())[self.x], self.y - 1)
-        self.board.hit(tuple(Board.cols.keys())[self.x + 1], self.y - 1)
+        try:
+            self.board.hit(tuple(Board.cols.keys())[self.x - 1], self.y - 1)
+        except IndexError:
+            pass
+        try:
+            self.board.hit(tuple(Board.cols.keys())[self.x], self.y - 1)
+        except IndexError:
+            pass
+        try:
+            self.board.hit(tuple(Board.cols.keys())[self.x + 1], self.y - 1)
+        except IndexError:
+            pass
 
         # second Column
-        self.board.hit(tuple(Board.cols.keys())[self.x - 1], self.y)
-        self.board.hit(tuple(Board.cols.keys())[self.x + 1], self.y)
+        try:
+            self.board.hit(tuple(Board.cols.keys())[self.x - 1], self.y)
+        except IndexError:
+            pass
+        try:
+            self.board.hit(tuple(Board.cols.keys())[self.x + 1], self.y)
+        except IndexError:
+            pass
 
         # third Column
-        self.board.hit(tuple(Board.cols.keys())[self.x - 1], self.y + 1)
-        self.board.hit(tuple(Board.cols.keys())[self.x], self.y + 1)
-        self.board.hit(tuple(Board.cols.keys())[self.x + 1], self.y + 1)
+        try:
+            self.board.hit(tuple(Board.cols.keys())[self.x - 1], self.y + 1)
+        except IndexError:
+            pass
+        try:
+            self.board.hit(tuple(Board.cols.keys())[self.x], self.y + 1)
+        except IndexError:
+            pass
+        try:
+            self.board.hit(tuple(Board.cols.keys())[self.x + 1], self.y + 1)
+        except IndexError:
+            pass
 
     def __str__(self):
         return self.name

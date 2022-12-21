@@ -15,7 +15,9 @@ def one_vs_computer(salvo = False, with_mine=False):
     computer.opponent = player
 
     # setup boards
-    player.set_up_board(with_mine)
+    if player.set_up_board(with_mine) == "quit":
+        print("Exiting this game play.")
+        return
     computer.set_up_board(with_mine)
 
     # finally show boards of each player after setting up
@@ -54,8 +56,12 @@ def two_players(salvo=False, with_mine = False):
     player_2.opponent = player
 
     # setup boards
-    player.set_up_board(with_mine)
-    player_2.set_up_board(with_mine)
+    if player.set_up_board(with_mine) == "quit":
+        print("Exiting this game play.")
+        return
+    if player_2.set_up_board(with_mine)== "quit":
+        print("Exiting this game play.")
+        return
 
     # finally show board of both the players
     player.show_board()
@@ -142,7 +148,7 @@ if __name__ == '__main__':
         elif c.strip() == "6":
             two_players(False, True)
         elif c.strip() == "7":
-            computer_vs_computer(False, False)
+            computer_vs_computer(False, True)
         elif c.strip() == "8":
             sys.exit(0)
 

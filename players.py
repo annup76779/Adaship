@@ -1,5 +1,5 @@
 from random import choice, randint
-
+import sys
 from board import Board
 from config import ships, board_size
 from utils import get_coordinates_tuple
@@ -57,6 +57,8 @@ class Player:
                 print("Board is reset.")
                 self.board.reset() # reset the board
                 continue
+            elif boat.strip().lower() == "quit":
+                return "quit"
 
             if boat not in ships.keys():
                 print("Invalid boat name!!!")
@@ -160,7 +162,7 @@ class Computer(Player):
         self.show_board()
 
     def play(self):
-        print("\nComputer's Chance")
+        print("\nComputer_%s's Chance" % str(self.player_id))
         print(self.board)
         x = choice(tuple(Board.cols.keys()))
         y = randint(0, board_size[0] - 1)
@@ -180,7 +182,7 @@ class Computer(Player):
         print("--"* board_size[0])
 
     def play_salvo(self):
-        print("\nComputer's Chance")
+        print("\nComputer_%s's Chance" % str(self.player_id))
         self.show_board()
         live_boats = self.board.get_live_boats()
         for coordinate in range(len(live_boats)):
@@ -203,7 +205,7 @@ class Computer(Player):
         return True
 
     def __str__(self):
-        return "Computer"
+        return "Computer_%s" % str(self.player_id)
 
     def __repr__(self):
-        return "Computer"
+        return "Computer_%s" % str(self.player_id)
