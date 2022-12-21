@@ -150,7 +150,23 @@ class Computer(Player):
         input('Press any key to continue: \n')
         print("--"* board_size[0])
 
-
+    def play_salvo(self):
+        print("\nComputer's Chance")
+        self.show_board()
+        live_boats = self.board.get_live_boats()
+        for coordinate in range(len(live_boats)):
+            x = choice(tuple(Board.cols.keys()))
+            y = randint(0, board_size[0] - 1)
+            hit_status = self.opponent.board.hit(x, y, True)
+            while not hit_status:
+                x = choice(tuple(Board.cols.keys()))
+                y = randint(0, board_size[0] - 1)
+                hit_status = self.opponent.board.hit(x, y, True)
+            else:
+                print("%s%s is a '%s' on %s's boat!" % (x, y, hit_status, self.opponent))
+        input('Press any key to continue: \n')
+        print("--"* board_size[0])
+        return True
 
     def __str__(self):
         return "Computer"
