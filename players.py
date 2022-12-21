@@ -103,6 +103,8 @@ class Player:
             hit_status = self.opponent.board.hit(x, y)
             if hit_status in ["Hit", "Miss"]:
                 print("%s%s is a '%s' on %s's boat!" % (x, y, hit_status, self.opponent))
+            elif hit_status == "Blast":
+                print("%s%s is a 'Blast' of Mine" % (x, y))
         print("--"* board_size[0])
         return True
 
@@ -126,6 +128,9 @@ class Player:
                 hit_status = self.opponent.board.hit(x, y)
                 if hit_status in ["Hit", "Miss"]:
                     print("%s%s is a '%s' on %s's boat!" % (x, y, hit_status, self.opponent))
+                elif hit_status == "Blast":
+                    print("%s%s is a 'Blast' of Mine" % (x, y))
+
         print("--"* board_size[0])
         return True
 
@@ -156,6 +161,9 @@ class Computer(Player):
         hit_status = self.opponent.board.hit(x, y, True)
         if hit_status == "exists":
             return
+        elif hit_status == "Blast":
+            print("%s%s is a 'Blast' of Mine" % (x, y))
+
         while not hit_status:
             x = choice(tuple(Board.cols.keys()))
             y = randint(0, board_size[0] - 1)
@@ -175,6 +183,9 @@ class Computer(Player):
             hit_status = self.opponent.board.hit(x, y, True)
             if hit_status == "exists":
                 continue
+            elif hit_status == "Blast":
+                print("%s%s is a 'Blast' of Mine" % (x, y))
+
             while not hit_status:
                 x = choice(tuple(Board.cols.keys()))
                 y = randint(0, board_size[0] - 1)
@@ -182,7 +193,7 @@ class Computer(Player):
             else:
                 print("%s%s is a '%s' on %s's boat!" % (x, y, hit_status, self.opponent))
         input('Press any key to continue: \n')
-        print("--"* board_size[0])
+        print("--" * board_size[0])
         return True
 
     def __str__(self):
