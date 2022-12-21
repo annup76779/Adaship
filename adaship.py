@@ -17,6 +17,8 @@ def one_vs_computer(salvo = False):
     # setup boards
     player.set_up_board()
     computer.set_up_board()
+
+    # finally show boards of each player after setting up
     player.show_board()
     computer.show_board()
 
@@ -27,13 +29,17 @@ def one_vs_computer(salvo = False):
     current_player = None
     while player.board.board_status and computer.board.board_status:
         current_player = players[iteration % 2]
-        current_player.play()
+        if salvo:
+            current_player.play_salvo()
+        else:
+            current_player.play()
         iteration += 1
 
     winner = players[(iteration+1) % 2]
     print("Winner is", winner)
     winner.show_board()
     player.show_board()
+
 
 
 def two_players(salvo=False):
@@ -60,7 +66,10 @@ def two_players(salvo=False):
     current_player = None
     while player.board.board_status and player_2.board.board_status:
         current_player = players[iteration % 2]
-        current_player.play()
+        if salvo:
+            current_player.play_salvo()
+        else:
+            current_player.play()
         iteration += 1
 
     winner = players[(iteration+1) % 2]
@@ -69,20 +78,22 @@ def two_players(salvo=False):
     player.show_board()
 
 
-
 if __name__ == '__main__':
-    c = input("1. One player v computer game\n"
-              "2. Two player game\n"
-              "3. One player v computer (salvo) game\n"
-              "4. Two player game (salvo) game"
-              "5. Quit\n")
-    if c.strip() == "1":
-        one_vs_computer()
-    elif c.strip() == "2":
-        two_players()
-    elif c.strip() == "3":
-        pass
-    elif c.strip() == "4":
-        pass
-    else:
-        sys.exit(0)
+    while True:
+        c = input("1. One player v computer game\n"
+                  "2. Two player game\n"
+                  "3. One player v computer (salvo) game\n"
+                  "4. Two player game (salvo) game"
+                  "5. Quit\n")
+        if c.strip() == "1":
+            one_vs_computer()
+        elif c.strip() == "2":
+            two_players()
+        elif c.strip() == "3":
+            one_vs_computer(True)
+        elif c.strip() == "4":
+            two_players(True)
+        elif c.strip() == "5":
+            sys.exit(0)
+
+        print("\n\n")

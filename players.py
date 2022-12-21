@@ -26,6 +26,7 @@ class Player:
         self.board = Board()
         while True:
             placed, not_placed = self.board.get_placed_and_not_placed_ships()
+            print(self, "- set up your board!")
             print("\nBoats placed on the board: ")
             if not placed:
                 print("\tNo boats on the board!")
@@ -42,13 +43,20 @@ class Player:
             # starting asking for the boat details to place it
             # also have option to automatically place ships legally
             print("\n\nPlease Choose options from bellow options: ")
-            print("1. Press Enter to 'Auto place rest of the boat': ")
-            print("2. Enter the name fo the boat want to place: ")
+            print("~ Press Enter to 'Auto place rest of the boat': ")
+            print("~ Enter 'reset' to reset the board: ")
+            print("~ | Enter the name of the boat want to place: |")
+            print("~ Enter 'quit' to quit the game: ")
+
             boat = input().strip().title()
 
             if boat == "":  # this means auto_fill is chosen
                 self.board.auto_place_remaining_ship()
                 break
+            elif boat.strip().lower() == "reset":
+                print("Board is reset.")
+                self.board.reset() # reset the board
+                continue
 
             if boat not in ships.keys():
                 print("Invalid boat name!!!")
@@ -70,6 +78,13 @@ class Player:
             # updating the board with the new entry of the boat placement
             self.board.update_board(x, y, direction, boat)
 
+        #
+        # display the board to player before continuing
+        self.show_board()
+        permission = input("Do you want to continue with this board? (y/n): ")
+        if permission[:1].lower() == "n":
+            self.set_up_board()
+
     def play(self):
         print("%s's chance - " % f"Player_{self.player_id}")
         self.show_board()
@@ -82,8 +97,23 @@ class Player:
             hit_status = self.opponent.board.hit(x, y)
             if hit_status in ["Hit", "Miss"]:
                 print("%s%s is a '%s' on %s's boat!" % (x, y, hit_status, self.opponent))
+        print("--"* board_size[0])
+        return True
+
+    def play_salvo(self):
+        print("%s's chance - " % f"Player_{self.player_id}")
+        self.show_board()
+        live_boats = self.board.get_live_boats()
+        coordinates = input("Enter the coordinates as salvo to hit E.g.: F3 G1: ").strip().upper().split()
+        for coordinate in coordinates[: len(live_boats)]:
+            x, y = get_coordinates_tuple(coordinate)
+            if x is None or y is None:
+                print("Invalid coordinates, considered as complete Miss.")
             else:
-                print("Already cleared this spot!")
+                hit_status = self.opponent.board.hit(x, y)
+                if hit_status in ["Hit", "Miss"]:
+                    print("%s%s is a '%s' on %s's boat!" % (x, y, hit_status, self.opponent))
+        print("--"* board_size[0])
         return True
 
     def show_board(self):
@@ -98,21 +128,6 @@ class Player:
         return "Player_%s" % str(self.player_id)
 
 
-    # def play_salvo(self):
-    #     print("%s's chance - " % f"Player_{self.player_id}")
-    #     print(self.board)
-    #     coordinates = input("Enter the coordinates to hit E.g.: F3: ").strip().capitalize()
-    #     fetched_coordinates = []
-    #     if
-    #     for x, y in coordinates:
-    #         if x is None or y is None:
-    #             print("Invalid coordinates, considered as complete Miss.")
-    #             continue
-    #         else:
-    #             self.opponent.board.hit(x, y)
-    #     return True
-
-
 class Computer(Player):
     def set_up_board(self):
         self.board = Board()
@@ -121,7 +136,7 @@ class Computer(Player):
         print("Computer has generated it's board.")
 
     def play(self):
-        print("Computer's Chance")
+        print("\nComputer's Chance")
         print(self.board)
         x = choice(tuple(Board.cols.keys()))
         y = randint(0, board_size[0] - 1)
@@ -132,7 +147,10 @@ class Computer(Player):
             hit_status = self.opponent.board.hit(x, y, True)
         else:
             print("%s%s is a '%s' on %s's boat!" % (x, y, hit_status, self.opponent))
-        input('Press any key to continue: ')
+        input('Press any key to continue: \n')
+        print("--"* board_size[0])
+
+
 
     def __str__(self):
         return "Computer"

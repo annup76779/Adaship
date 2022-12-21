@@ -23,6 +23,11 @@ class Board:
         self.board = [["."] * board_size[1] for _ in range(board_size[0])]
         self.onboard_ships: dict = {ship_name: Ship(ship_name, size) for ship_name, size in ships.items()}
 
+    def reset(self):
+        for i in range(board_size[0]):
+            for j in range(board_size[1]):
+                self.board[i][j] = "."
+
     def validate_ship_placement(self, x: int, y: int, direction: str, size: int):
         sum_of_free_place = 0
         try:
@@ -104,9 +109,17 @@ class Board:
     def hit(self, x: str, y: int, auto_hit=False):
         # get the col of the board
         col = self.cols.get(x.upper())
-        if self.board[y][col] == "M" or self.board[y][col] == "H":
+        if col is None:
+            print(f"{x.upper()}{y}", "is not a valid choice for the board.")
             return False
-        print("Coordinate", f"{x}{y}")
+        try:
+            if self.board[y][col] == "M" or self.board[y][col] == "H":
+                print("Already cleared this spot!")
+                return False
+        except IndexError:
+            print(f"{x.upper()}{y}", "is not a valid choice for the board.")
+            return False
+
         coordinate_state = self.board[y][col]
         if isinstance(coordinate_state, Ship) and (not coordinate_state.is_sunken()):
             coordinate_state.hit()
@@ -123,7 +136,6 @@ class Board:
     def board_status(self):
         return not all(boat_obj.is_sunken() == True for boat_obj in self.onboard_ships.values())
 
-    @property
     def get_live_boats(self):
         return [boat for boat, status in self.get_ship_sunken_status().items() if status == False]
 
