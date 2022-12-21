@@ -88,7 +88,13 @@ class Player:
     def play(self):
         print("%s's chance - " % f"Player_{self.player_id}")
         self.show_board()
-        coordinates = input("Enter the coordinates to hit E.g.: F3: ").strip().capitalize()
+        coordinates = input("Enter the coordinates to hit E.g.: F3: ").strip().upper()
+        if not coordinates:
+            print("Do you want to quit game?")
+            selection = input("(y/n): ").strip()
+            if selection[:1] == "y":
+                print("Quiting the game.")
+                return
         x, y = get_coordinates_tuple(coordinates)
         if x is None or y is None:
             print("Invalid coordinates, considered as complete Miss.")
@@ -105,6 +111,13 @@ class Player:
         self.show_board()
         live_boats = self.board.get_live_boats()
         coordinates = input("Enter the coordinates as salvo to hit E.g.: F3 G1: ").strip().upper().split()
+        if not coordinates:
+            print("Do you want to quit game?")
+            selection = input("(y/n): ").strip()
+            if selection[:1] == "y":
+                print("Quiting the game.")
+                return
+
         for coordinate in coordinates[: len(live_boats)]:
             x, y = get_coordinates_tuple(coordinate)
             if x is None or y is None:
@@ -141,6 +154,8 @@ class Computer(Player):
         x = choice(tuple(Board.cols.keys()))
         y = randint(0, board_size[0] - 1)
         hit_status = self.opponent.board.hit(x, y, True)
+        if hit_status == "exists":
+            return
         while not hit_status:
             x = choice(tuple(Board.cols.keys()))
             y = randint(0, board_size[0] - 1)
@@ -158,6 +173,8 @@ class Computer(Player):
             x = choice(tuple(Board.cols.keys()))
             y = randint(0, board_size[0] - 1)
             hit_status = self.opponent.board.hit(x, y, True)
+            if hit_status == "exists":
+                continue
             while not hit_status:
                 x = choice(tuple(Board.cols.keys()))
                 y = randint(0, board_size[0] - 1)

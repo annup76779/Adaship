@@ -115,7 +115,7 @@ class Board:
         try:
             if self.board[y][col] == "M" or self.board[y][col] == "H":
                 print("Already cleared this spot!")
-                return False
+                return "exists"
         except IndexError:
             print(f"{x.upper()}{y}", "is not a valid choice for the board.")
             return False
