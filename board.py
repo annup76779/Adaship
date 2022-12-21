@@ -1,6 +1,7 @@
 from functools import reduce
 
 from config import board_size, ships
+from mine import Mine
 from ships import Ship
 
 from random import randint, choice
@@ -125,6 +126,9 @@ class Board:
             coordinate_state.hit()
             self.board[y][col] = "H"
             return "Hit"
+        elif isinstance(coordinate_state, Mine):
+            coordinate_state.blast()
+            return "Blast"
         else:
             self.board[y][col] = "M"
             return "Miss"
